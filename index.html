@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIptitude</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+      color: #ffffff;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #00ffd5;
+      margin-bottom: 1rem;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      margin-bottom: 2.5rem;
+    }
+    form {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(8.5px);
+      -webkit-backdrop-filter: blur(8.5px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .question {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    select, input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: #00ffd5;
+      color: #000;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #00c5a0;
+    }
+    footer {
+      margin-top: 4rem;
+      font-size: 0.85rem;
+      color: #aaaaaa;
+    }
+    h2, h3 {
+      color: #00ffd5;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>AIptitude</h1>
+      <p>The 2-minute quiz that reveals how AI-ready you really are — and what to do next.</p>
+    </header>
+
+    <main>
+      <form id="quizForm">
+        <!-- Questions 1 to 10 will be inserted here by server -->
+        <label>Email address (required):</label><br>
+        <input type="email" id="email" name="email" required placeholder="you@example.com" /><br><br>
+
+        <button type="submit">Get My AIptitude Score</button>
+      </form>
+    </main>
+
+    <footer>
+      <p>Built by Jim Spiewak • Powered by AI</p>
+    </footer>
+
+    <script>
+      const form = document.getElementById("quizForm");
+
+      form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const entries = {};
+        for (let [key, value] of formData.entries()) {
+          if (entries[key]) {
+            entries[key] += `, ${value}`;
+          } else {
+            entries[key] = value;
+          }
+        }
+
+        const response = await fetch("/api/score", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ answers: entries })
+        });
+
+        const data = await response.json();
+        const query = new URLSearchParams({
+          score: data.score,
+          tier: data.tier,
+          blind_spots: data.blind_spots.join(", "),
+          next_step: data.next_step
+        });
+
+        window.location.href = "/results.html?" + query.toString();
+      });
+    </script>
+  </div>
+</body>
+</html>

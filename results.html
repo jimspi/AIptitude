@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your AIptitude Results</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #121212;
+      color: #ffffff;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    h1 {
+      color: #00ffd5;
+    }
+    .result-block {
+      max-width: 600px;
+      margin: auto;
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,255,213,0.2);
+    }
+    p {
+      font-size: 1.1rem;
+    }
+    .label {
+      color: #aaaaaa;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your AIptitude Results</h1>
+  <div class="result-block">
+    <p class="label">Score</p>
+    <p id="score"></p>
+
+    <p class="label">Tier</p>
+    <p id="tier"></p>
+
+    <p class="label">Blind Spots</p>
+    <p id="blind_spots"></p>
+
+    <p class="label">Next Step</p>
+    <p id="next_step"></p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('score').innerText = params.get('score') || 'N/A';
+    document.getElementById('tier').innerText = params.get('tier') || 'N/A';
+    document.getElementById('blind_spots').innerText = params.get('blind_spots') || 'N/A';
+    document.getElementById('next_step').innerText = params.get('next_step') || 'N/A';
+  </script>
+</body>
+</html>
