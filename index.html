@@ -91,9 +91,11 @@
 
     <main>
       <form id="quizForm">
-        <!-- Questions 1 to 10 will be inserted here by server -->
         <label>Email address (required):</label><br>
         <input type="email" id="email" name="email" required placeholder="you@example.com" /><br><br>
+
+        <input type="hidden" name="_formsubmit_id" value="" /> <!-- for Formspree spam protection -->
+        <input type="hidden" name="_redirect" value="/results.html" />
 
         <button type="submit">Get My AIptitude Score</button>
       </form>
@@ -118,6 +120,16 @@
           }
         }
 
+        // Send to Formspree
+        fetch("https://formspree.io/f/mwpbkkqn", {
+          method: "POST",
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        // Send to GPT API
         const response = await fetch("/api/score", {
           method: "POST",
           headers: {
