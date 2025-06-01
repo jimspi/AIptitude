@@ -29,7 +29,7 @@
       color: #e0e0e0;
       margin-bottom: 2.5rem;
     }
-    form {
+    form, #quizSection {
       background-color: rgba(255, 255, 255, 0.05);
       padding: 30px;
       border-radius: 15px;
@@ -37,6 +37,7 @@
       backdrop-filter: blur(8.5px);
       -webkit-backdrop-filter: blur(8.5px);
       border: 1px solid rgba(255, 255, 255, 0.18);
+      margin-bottom: 2rem;
     }
     .question {
       margin-bottom: 1.5rem;
@@ -80,6 +81,7 @@
     h2, h3 {
       color: #00ffd5;
     }
+    #quizSection { display: none; }
   </style>
 </head>
 <body>
@@ -90,12 +92,25 @@
     </header>
 
     <main>
-      <form id="quizForm">
+      <form id="emailForm">
         <label>Email address (required):</label><br>
         <input type="email" id="email" name="email" required placeholder="you@example.com" /><br><br>
+        <input type="hidden" name="_formsubmit_id" value="" />
+        <button type="submit">Start Quiz</button>
+      </form>
 
-        <input type="hidden" name="_formsubmit_id" value="" /> <!-- for Formspree spam protection -->
-        <input type="hidden" name="_redirect" value="/results.html" />
+      <form id="quizSection">
+        <!-- Placeholder for actual quiz questions -->
+        <div class="question">
+          <label>How often do you use AI tools like ChatGPT?</label>
+          <select name="q1" required>
+            <option value="">Select one</option>
+            <option>Never</option>
+            <option>Occasionally</option>
+            <option>Weekly</option>
+            <option>Daily</option>
+          </select>
+        </div>
 
         <button type="submit">Get My AIptitude Score</button>
       </form>
@@ -106,35 +121,35 @@
     </footer>
 
     <script>
-      const form = document.getElementById("quizForm");
+      const emailForm = document.getElementById("emailForm");
+      const quizSection = document.getElementById("quizSection");
 
-      form.addEventListener("submit", async function(e) {
+      emailForm.addEventListener("submit", async function(e) {
         e.preventDefault();
-        const formData = new FormData(form);
-        const entries = {};
-        for (let [key, value] of formData.entries()) {
-          if (entries[key]) {
-            entries[key] += `, ${value}`;
-          } else {
-            entries[key] = value;
-          }
-        }
+        const formData = new FormData(emailForm);
+        const email = formData.get("email");
 
-        // Send to Formspree
-        fetch("https://formspree.io/f/mwpbkkqn", {
+        await fetch("https://https://formspree.io/f/mwpbkkqn", {
           method: "POST",
           body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
+          headers: { 'Accept': 'application/json' }
         });
 
-        // Send to GPT API
+        emailForm.style.display = "none";
+        quizSection.style.display = "block";
+      });
+
+      quizSection.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const formData = new FormData(quizSection);
+        const entries = {};
+        for (let [key, value] of formData.entries()) {
+          entries[key] = value;
+        }
+
         const response = await fetch("/api/score", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ answers: entries })
         });
 
@@ -152,3 +167,4 @@
   </div>
 </body>
 </html>
+
