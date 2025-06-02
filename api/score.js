@@ -1,39 +1,54 @@
+// api/score.js
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
   const answers = req.body.answers;
+  const q3 = answers.q3;
+  const formattedAnswers = Object.entries(answers).map(([key, value]) => {
+    return `${key}: ${Array.isArray(value) ? value.join(", ") : value}`;
+  }).join("\n");
 
-  const prompt = `
-You are AIptitude, an AI fluency assessment tool. Based on the following user answers, return a JSON with:
-1. An "AIptitude Score" from 0–100.
-2. A tier name: AI Newcomer, AI Explorer, Prompt Pro, or AI Native.
-3. 2–3 blind spots about the user's AI usage.
-4. A next step they should take to level up.
+  const prompt = `You are an expert AI career advisor. A user has completed a 10-question AI readiness quiz. Based on their responses, give them:
+- An AI readiness score from 0 to 100
+- A 1-word tier (e.g., Novice, Explorer, Builder, Strategist)
+- 2 bullet-point blind spots
+- 1 action-based next step
 
-User Answers:
-${JSON.stringify(answers)}
-`;
+Responses:
+${formattedAnswers}
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.OPENAI_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.7
-    })
-  });
-
-  const data = await response.json();
-  const output = data.choices[0].message.content;
+Now respond in strict JSON format like:
+{
+  "score": 82,
+  "tier": "Builder",
+  "blind_spots": ["Doesn't trust AI-generated content", "Lacks long-term AI learning plan"],
+  "next_step": "Follow 3 AI creators on LinkedIn and subscribe to an AI trend newsletter."
+}`;
 
   try {
-    const json = JSON.parse(output);
-    res.status(200).json(json);
+    const gptRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+      }),
+    });
+
+    const gptData = await gptRes.json();
+    const rawText = gptData.choices[0]?.message?.content || "{}";
+    const json = JSON.parse(rawText);
+    return res.status(200).json(json);
   } catch (err) {
-    res.status(500).json({ error: "Failed to parse GPT response" });
+    console.error("GPT error:", err);
+    return res.status(500).json({ message: "Error generating score" });
   }
 }
+
