@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Your AIptitude Results</title>
   <link rel="icon" href="data:,">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -102,12 +102,12 @@
     </div>
 
     <div class="cta-message">
-      Aiptitude can help, no matter your score or skill level. Someone will email you soon with ways to help.
+      AIptitude can help, no matter your score or skill level. Someone will email you soon with ways to help.
     </div>
 
     <div class="actions">
-      <button id="viewToolsBtn">View Tools for Your Tier</button>
       <button id="shareBtn">Share AIptitude</button>
+      <button id="toolsBtn">View Tools for Your Tier</button>
       <div id="shareMsg" style="display: none;"></div>
     </div>
   </div>
@@ -118,17 +118,18 @@
     const tier = params.get('tier') || 'N/A';
     const blindSpots = params.get('blind_spots') || 'Not provided';
     const nextStep = params.get('next_step') || 'N/A';
+    const email = params.get('email') || '';
 
     document.getElementById('score').innerText = score;
     document.getElementById('tier').innerText = tier;
     document.getElementById('blind_spots').innerText = blindSpots;
     document.getElementById('next_step').innerText = nextStep;
 
-    document.getElementById('viewToolsBtn').onclick = () => {
-      window.location.href = `/tools.html?tier=${encodeURIComponent(tier)}`;
-    };
+    const shareBtn = document.getElementById('shareBtn');
+    const toolsBtn = document.getElementById('toolsBtn');
+    const shareMsg = document.getElementById('shareMsg');
 
-    document.getElementById('shareBtn').addEventListener('click', async () => {
+    shareBtn.addEventListener('click', async () => {
       const shareText = "Just took the AIptitude quiz and got my AI readiness score. Try it yourself: https://a-iptitude.vercel.app/";
       const shareData = {
         title: "AIptitude Quiz",
@@ -136,23 +137,28 @@
         url: "https://a-iptitude.vercel.app/"
       };
 
-      const shareMsg = document.getElementById('shareMsg');
       if (navigator.share) {
         try {
           await navigator.share(shareData);
           shareMsg.innerText = "Thanks for sharing!";
-        } catch {
+        } catch (err) {
           shareMsg.innerText = "Share canceled.";
         }
       } else {
         navigator.clipboard.writeText(shareText);
         shareMsg.innerText = "Link copied to clipboard!";
       }
+
       shareMsg.style.display = "block";
+    });
+
+    toolsBtn.addEventListener('click', () => {
+      window.location.href = `/tools.html?tier=${encodeURIComponent(tier)}&email=${encodeURIComponent(email)}`;
     });
   </script>
 </body>
 </html>
+
 
 
 
