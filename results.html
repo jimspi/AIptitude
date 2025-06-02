@@ -3,174 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AIptitude</title>
+  <title>Your AIptitude Results</title>
   <link rel="icon" href="data:,">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Inter', sans-serif;
+      margin: 0;
       background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
-      color: #ffffff;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
     }
-    .container {
+    .result-box {
       max-width: 600px;
-      margin: auto;
-      padding: 60px 20px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       text-align: center;
     }
-    header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
+    h1 {
       color: #00ffd5;
+      font-size: 2.2rem;
       margin-bottom: 1rem;
     }
-    header p {
-      font-size: 1.1rem;
-      color: #e0e0e0;
-      margin-bottom: 2.5rem;
-    }
-    form, #quizSection {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(8.5px);
-      -webkit-backdrop-filter: blur(8.5px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      margin-bottom: 2rem;
-    }
-    .question {
+    .section {
       margin-bottom: 1.5rem;
-      text-align: left;
     }
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.5rem;
+    .label {
+      font-weight: 700;
+      color: #aaa;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
     }
-    select, input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
+    .value {
+      font-size: 1.25rem;
+      color: #fff;
+      margin-top: 0.3rem;
+    }
+    .cta-message {
+      margin-top: 2rem;
       font-size: 1rem;
+      color: #ccc;
     }
-    input[type="checkbox"] {
-      margin-right: 10px;
+    .actions {
+      margin-top: 2.5rem;
     }
-    button {
-      width: 100%;
-      padding: 15px;
+    .actions button {
       background-color: #00ffd5;
       color: #000;
-      font-size: 1rem;
-      font-weight: 600;
+      padding: 12px 24px;
       border: none;
       border-radius: 8px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s ease;
+      margin: 0.5rem;
     }
-    button:hover {
-      background-color: #00c5a0;
+    .actions button:hover {
+      background-color: #00c2a4;
     }
-    footer {
-      margin-top: 4rem;
-      font-size: 0.85rem;
-      color: #aaaaaa;
+    #shareMsg {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #aaa;
     }
-    h2, h3 {
-      color: #00ffd5;
-    }
-    #quizSection { display: none; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>AIptitude</h1>
-      <p>The 2-minute quiz that reveals how AI-ready you really are — and what to do next.</p>
-    </header>
+  <div class="result-box">
+    <h1>Your AIptitude Results</h1>
 
-    <main>
-      <form id="emailForm">
-        <label>Email address (required):</label><br>
-        <input type="email" id="email" name="email" required placeholder="you@example.com" /><br><br>
-        <input type="hidden" name="_formsubmit_id" value="" />
-        <button type="submit">Start Quiz</button>
-      </form>
+    <div class="section">
+      <div class="label">AI Score</div>
+      <div class="value" id="score">Loading...</div>
+    </div>
 
-      <form id="quizSection">
-        <!-- All existing questions stay the same -->
-        <div class="question">
-          <label>10. Do you have a plan to keep up with AI changes?</label>
-          <select name="q10" required>
-            <option value="">Select one</option>
-            <option>No, it’s stressful</option>
-            <option>Not yet</option>
-            <option>I follow people/podcasts</option>
-            <option>I have a learning system</option>
-          </select>
-        </div>
+    <div class="section">
+      <div class="label">Tier</div>
+      <div class="value" id="tier">Loading...</div>
+    </div>
 
-        <button type="submit">Get My AIptitude Score</button>
-      </form>
-    </main>
+    <div class="section">
+      <div class="label">Blind Spots</div>
+      <div class="value" id="blind_spots">Loading...</div>
+    </div>
 
-    <footer>
-      <p>Built by Jim Spiewak • Powered by AI</p>
-    </footer>
+    <div class="section">
+      <div class="label">Next Step</div>
+      <div class="value" id="next_step">Loading...</div>
+    </div>
 
-    <script>
-      const emailForm = document.getElementById("emailForm");
-      const quizSection = document.getElementById("quizSection");
+    <div class="cta-message">
+      Aiptitude can help, no matter your score or skill level. Someone will email you soon with ways to help.
+    </div>
 
-      emailForm.addEventListener("submit", async function(e) {
-        e.preventDefault();
-        const formData = new FormData(emailForm);
-        const email = formData.get("email");
-
-        await fetch("https://formspree.io/f/mwpbkkqn", {
-          method: "POST",
-          body: formData,
-          headers: { 'Accept': 'application/json' }
-        });
-
-        emailForm.style.display = "none";
-        quizSection.style.display = "block";
-      });
-
-      quizSection.addEventListener("submit", async function(e) {
-        e.preventDefault();
-        const formData = new FormData(quizSection);
-        const entries = {};
-        for (let [key, value] of formData.entries()) {
-          if (entries[key]) {
-            entries[key] = [].concat(entries[key], value);
-          } else {
-            entries[key] = value;
-          }
-        }
-
-        const response = await fetch("/api/score", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ answers: entries })
-        });
-
-        const data = await response.json();
-        const query = new URLSearchParams({
-          score: data.score || 'N/A',
-          tier: data.tier || 'N/A',
-          blind_spots: Array.isArray(data.blind_spots) ? data.blind_spots.join(", ") : 'Not provided',
-          next_step: `${data.next_step || 'N/A'}\n\n💡 Aiptitude can help — we’ll email you a learning path tailored to you.`
-        });
-
-        window.location.href = "/results.html?" + query.toString();
-      });
-    </script>
+    <div class="actions">
+      <button id="viewToolsBtn">View Tools for Your Tier</button>
+      <button id="shareBtn">Share AIptitude</button>
+      <div id="shareMsg" style="display: none;"></div>
+    </div>
   </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const score = params.get('score') || 'N/A';
+    const tier = params.get('tier') || 'N/A';
+    const blindSpots = params.get('blind_spots') || 'Not provided';
+    const nextStep = params.get('next_step') || 'N/A';
+
+    document.getElementById('score').innerText = score;
+    document.getElementById('tier').innerText = tier;
+    document.getElementById('blind_spots').innerText = blindSpots;
+    document.getElementById('next_step').innerText = nextStep;
+
+    document.getElementById('viewToolsBtn').onclick = () => {
+      window.location.href = `/tools.html?tier=${encodeURIComponent(tier)}`;
+    };
+
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const shareText = "Just took the AIptitude quiz and got my AI readiness score. Try it yourself: https://a-iptitude.vercel.app/";
+      const shareData = {
+        title: "AIptitude Quiz",
+        text: shareText,
+        url: "https://a-iptitude.vercel.app/"
+      };
+
+      const shareMsg = document.getElementById('shareMsg');
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          shareMsg.innerText = "Thanks for sharing!";
+        } catch {
+          shareMsg.innerText = "Share canceled.";
+        }
+      } else {
+        navigator.clipboard.writeText(shareText);
+        shareMsg.innerText = "Link copied to clipboard!";
+      }
+      shareMsg.style.display = "block";
+    });
+  </script>
 </body>
 </html>
+
 
 
