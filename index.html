@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AIptitude</title>
+  <link rel="icon" href="data:,">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -100,15 +101,111 @@
       </form>
 
       <form id="quizSection">
-        <!-- Placeholder for actual quiz questions -->
         <div class="question">
-          <label>How often do you use AI tools like ChatGPT?</label>
+          <label>1. How often do you use AI tools like ChatGPT?</label>
           <select name="q1" required>
             <option value="">Select one</option>
             <option>Never</option>
             <option>Occasionally</option>
             <option>Weekly</option>
             <option>Daily</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>2. What's the main reason you've used AI?</label>
+          <select name="q2" required>
+            <option value="">Select one</option>
+            <option>Curiosity</option>
+            <option>To save time</option>
+            <option>Work or productivity</option>
+            <option>Haven’t used it yet</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>3. What have you used AI for? (select all that apply)</label><br>
+          <input type="checkbox" name="q3" value="Writing"> Writing<br>
+          <input type="checkbox" name="q3" value="Images"> Creating images/videos<br>
+          <input type="checkbox" name="q3" value="Brainstorming"> Brainstorming<br>
+          <input type="checkbox" name="q3" value="Automation"> Automation<br>
+          <input type="checkbox" name="q3" value="None"> None<br>
+        </div>
+
+        <div class="question">
+          <label>4. When you hear “prompt engineering,” what comes to mind?</label>
+          <select name="q4" required>
+            <option value="">Select one</option>
+            <option>Never heard of it</option>
+            <option>Sounds technical</option>
+            <option>I kind of get it</option>
+            <option>I use prompts well</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>5. How do you feel about AI impacting your work?</label>
+          <select name="q5" required>
+            <option value="">Select one</option>
+            <option>It won’t</option>
+            <option>Maybe someday</option>
+            <option>Already is</option>
+            <option>I’m using it to stay ahead</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>6. Do you trust AI-generated content?</label>
+          <select name="q6" required>
+            <option value="">Select one</option>
+            <option>Not at all</option>
+            <option>Sometimes</option>
+            <option>Usually</option>
+            <option>I verify before using</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>7. How often do you intentionally learn about AI?</label>
+          <select name="q7" required>
+            <option value="">Select one</option>
+            <option>Never</option>
+            <option>Once or twice</option>
+            <option>Sometimes</option>
+            <option>Regularly follow trends</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>8. What best describes your AI skill level?</label>
+          <select name="q8" required>
+            <option value="">Select one</option>
+            <option>Just starting</option>
+            <option>Know the basics</option>
+            <option>Can teach others</option>
+            <option>Built or customized tools</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>9. Where do you want AI to help most?</label>
+          <select name="q9" required>
+            <option value="">Select one</option>
+            <option>Personal productivity</option>
+            <option>Side hustle</option>
+            <option>Career growth</option>
+            <option>Big-picture thinking</option>
+          </select>
+        </div>
+
+        <div class="question">
+          <label>10. Do you have a plan to keep up with AI changes?</label>
+          <select name="q10" required>
+            <option value="">Select one</option>
+            <option>No, it’s stressful</option>
+            <option>Not yet</option>
+            <option>I follow people/podcasts</option>
+            <option>I have a learning system</option>
           </select>
         </div>
 
@@ -155,10 +252,10 @@
 
         const data = await response.json();
         const query = new URLSearchParams({
-          score: data.score,
-          tier: data.tier,
-          blind_spots: data.blind_spots.join(", "),
-          next_step: data.next_step
+          score: data.score || 'N/A',
+          tier: data.tier || 'N/A',
+          blind_spots: Array.isArray(data.blind_spots) ? data.blind_spots.join(", ") : 'Not provided',
+          next_step: data.next_step || 'N/A'
         });
 
         window.location.href = "/results.html?" + query.toString();
@@ -167,5 +264,6 @@
   </div>
 </body>
 </html>
+
 
 
