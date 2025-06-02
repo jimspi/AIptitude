@@ -257,8 +257,7 @@
           blind_spots: Array.isArray(data.blind_spots) ? data.blind_spots.join(", ") : 'Not provided',
           next_step: data.next_step || 'N/A'
         });
-
-        window.location.href = "/results.html?" + query.toString();
+        window.location.href = "/results.html?" + query.toString() + "&cta=" + encodeURIComponent("Aiptitude can help, no matter your score or skill level. Someone will email you soon with ways to help.");
       });
     </script>
   </div>
