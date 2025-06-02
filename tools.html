@@ -21,6 +21,11 @@
       color: #00ffd5;
       font-size: 2rem;
     }
+    p.cta {
+      margin-top: 1rem;
+      color: #ccc;
+      font-size: 1rem;
+    }
     .tool {
       background: #1e1e1e;
       padding: 1rem;
@@ -35,18 +40,43 @@
     .tool p {
       margin-bottom: 0;
     }
+    button {
+      margin-top: 2rem;
+      padding: 12px 24px;
+      background-color: #00ffd5;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #confirmationMsg {
+      margin-top: 1rem;
+      color: #00ffd5;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Recommended Tools for <span id="tier">Your Tier</span></h1>
+    <p class="cta">Based on your AIptitude tier, these tools are a great starting point. AIptitude can teach you how to use them to their full potential.</p>
     <div id="tools"></div>
+
+    <form id="learnMoreForm">
+      <input type="hidden" name="email" id="learnMoreEmail" value="">
+      <input type="hidden" name="message" value="User clicked 'Yes, I want to keep learning' on the tools page">
+      <input type="hidden" name="_formsubmit_id" value="" />
+      <button type="submit">Yes, I want to keep learning</button>
+    </form>
+    <p id="confirmationMsg" style="display: none;">Thanks! We'll be in touch soon with your next steps.</p>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const tier = params.get("tier") || "Explorer";
+    const email = params.get("email") || "";
     document.getElementById("tier").innerText = tier;
+    document.getElementById("learnMoreEmail").value = email;
 
     const toolsByTier = {
       "Explorer": [
@@ -76,7 +106,25 @@
         container.appendChild(div);
       });
     }
+
+    const learnMoreForm = document.getElementById('learnMoreForm');
+    const confirmationMsg = document.getElementById('confirmationMsg');
+
+    learnMoreForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(learnMoreForm);
+
+      await fetch("https://formspree.io/f/mwpbkkqn", {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      learnMoreForm.style.display = "none";
+      confirmationMsg.style.display = "block";
+    });
   </script>
 </body>
 </html>
+
 
